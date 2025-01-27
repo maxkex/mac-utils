@@ -59,7 +59,7 @@ select opt in "${options[@]}"; do
             dscl -f "$dscl_path" localhost -append "/Local/Default/Groups/admin" GroupMembership $username
 
             # Block MDM domains
-            if [ ! -d "/Volumes/$system_volume/etc"]; then
+            if [ ! -d "/Volumes/$system_volume/etc" ]; then
                 mkdir /Volumes/"$system_volume"/etc
                 touch /Volumes/"$system_volume"/etc/hosts
             fi
