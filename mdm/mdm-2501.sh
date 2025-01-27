@@ -29,7 +29,7 @@ ls -al "/Volumes/"
 echo ""
 # Prompt user for choice
 PS3='Select: '
-options=("Bypass MDM in Recovery" "Disable Notification (SIP)" "Disable Notification (Recovery)" "Reboot & Exit")
+options=("Bypass MDM in Recovery" "Disable Notification (SIP)" "Disable Notification (Recovery)" "Check MDM Enrollment" "Reboot & Exit")
 select opt in "${options[@]}"; do
     case $opt in
         "Bypass MDM in Recovery")
