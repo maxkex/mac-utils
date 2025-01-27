@@ -21,12 +21,12 @@
 
 4. Enter Recovery Mode & Open Safari.
 
-5. Navigate to https://www.github.com/maxkex/mac-utils/mdm
+5. Navigate to https://github.com/maxkex/mac-utils/tree/main/mdm
 
 6. Copy the script below:
 
 ```zsh
-curl https://raw.githubusercontent.com/maxkex/mac-utils/mdm/mdm-2501.sh -o mdm-2501.sh && chmod +x ./mdm-2501.sh  && ./mdm-2501.sh
+curl https://raw.githubusercontent.com/maxkex/mac-utils/main/mdm/mdm-2501.sh -o mdm-2501.sh && chmod +x ./mdm-2501.sh  && ./mdm-2501.sh
 ```
 
 7. Launch Terminal (Utilities > Terminal).
