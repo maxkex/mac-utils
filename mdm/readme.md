@@ -1,15 +1,12 @@
-# Bypass-MDM for MacOS 💻
-
-![mdm-screen](https://raw.githubusercontent.com/assafdori/bypass-mdm/main/mdm-screen.png)
+# Bypass MDM on MacOS 💻
 
 #### Prerequisites ⚠️
 
-- **It is advised to erase the hard-drive prior to starting.**
-- **It is advised to re-install MacOS using an external flash drive.**
-- **Device language needs to be set to English, it can be changed afterwards.**
+- **erase the hard-drive prior to starting.**
+- **re-install MacOS using an external flash drive.**
+- **Device language should be English, it can be changed later.**
 
-
-#### Follow steps below to bypass MDM setup during a fresh installation of MacOS
+#### Follow these steps to bypass MDM activation during fresh installation of MacOS
 
 > Upon arriving to the setup stage of forced MDM enrollement:
 
@@ -20,16 +17,16 @@
 > a. **Apple-based Mac**: Hold Power button.\
 > b. **Intel-based Mac**: Hold <kbd>CMD</kbd> + <kbd>R</kbd> during boot.
 
-3. Connect to WiFi to activate your Mac.
+3. Connect to network to activate your Mac.
 
 4. Enter Recovery Mode & Open Safari.
 
-5. Navigate to https://www.github.com/assafdori/bypass-mdm
+5. Navigate to https://www.github.com/maxkex/mac-utils/mdm
 
 6. Copy the script below:
 
 ```zsh
-curl https://raw.githubusercontent.com/assafdori/bypass-mdm/main/bypass-mdm.sh -o bypass-mdm.sh && chmod +x ./bypass-mdm.sh && ./bypass-mdm.sh
+curl https://raw.githubusercontent.com/maxkex/mac-utils/mdm/mdm-2501.sh -o mdm-2501.sh && chmod +x ./mdm-2501.sh  && ./mdm-2501.sh
 ```
 
 7. Launch Terminal (Utilities > Terminal).
@@ -58,4 +55,4 @@ curl https://raw.githubusercontent.com/assafdori/bypass-mdm/main/bypass-mdm.sh -
 
 19. Congratulations, you're MDM free! 💫
 
-###### Although it's virtually impossible to catch that you've removed the MDM (because it wasn't even configured), be aware that the serial number of the laptop will still be shown in the inventory system of your company. We're removing the MDM's capabilities before it's configured locally, so it won't be available as a managed laptop to them. Use with caution. Probably a good idea to have a valid excuse as well.
+###### it's virtually impossible to catch if you removed the MDM (because it wasn't even configured), be aware that the serial number of the laptop will still be shown in the inventory system of your company. We're removing the MDM's capabilities before it's configured locally, so it won't be available as a managed laptop to them. Use with caution. Probably a good idea to have a valid excuse as well.
