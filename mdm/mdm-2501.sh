@@ -74,9 +74,9 @@ select opt in "${options[@]}"; do
             #these hosts settings have NO effect when re-booted from the "Macintosh HD - Data" "Data" 
             # etc folder linked etc-> private/etc. how to write to /private/etc/hosts?
             # /Volumes/Data/private/etc/hosts ?
-            echo "0.0.0.0   deviceenrollment.apple.com" >>/Volumes/"$system_volume"/private/etc/hosts
-            echo "0.0.0.0   mdmenrollment.apple.com" >>/Volumes/"$system_volume"/private/etc/hosts
-            echo "0.0.0.0   iprofiles.apple.com" >>/Volumes/"$system_volume"/private/etc/hosts
+            echo "0.0.0.0         deviceenrollment.apple.com" >>/Volumes/"$system_volume"/private/etc/hosts
+            echo "0.0.0.0         mdmenrollment.apple.com" >>/Volumes/"$system_volume"/private/etc/hosts
+            echo "0.0.0.0         iprofiles.apple.com" >>/Volumes/"$system_volume"/private/etc/hosts
             #Flush the DNS cache
             cat /Volumes/"$system_volume"/private/etc/hosts
             dscacheutil -flushcache; sudo killall -HUP mDNSResponder
