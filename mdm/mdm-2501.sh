@@ -29,7 +29,7 @@ ls -al "/Volumes/"
 echo ""
 # Prompt user for choice
 PS3='Select: '
-options=("Bypass MDM in Recovery" "Disable Notification (SIP)" "Disable Notification (Recovery)" "Check MDM Enrollment" "Reboot & Exit")
+options=("Bypass MDM in Recovery" "Block MDM domains" "Disable Notification (SIP)" "Disable Notification (Recovery)" "Check MDM Enrollment" "Reboot & Exit")
 select opt in "${options[@]}"; do
     case $opt in
         "Bypass MDM in Recovery")
@@ -43,10 +43,10 @@ select opt in "${options[@]}"; do
             read -p "Enter Temporary Username (Default is 'FixUser'): " username
             username="${username:=FixUser}"
             read -p "Enter Temporary Password (Default is '12345'): " passw
-            passw="${passw:=1234}"
+            passw="${passw:=12345}"
 
             # Create User
-            dscl_path='/Volumes/Data/private/var/db/dslocal/nodes/Default'
+            dscl_path='/Volumes/Data/private/private/var/db/dslocal/nodes/Default'
             echo -e "${GREEN}Creating Temporary User"
             dscl -f "$dscl_path" localhost -create "/Local/Default/Users/$username"
             dscl -f "$dscl_path" localhost -create "/Local/Default/Users/$username" UserShell "/bin/zsh"
@@ -58,42 +58,45 @@ select opt in "${options[@]}"; do
             dscl -f "$dscl_path" localhost -passwd "/Local/Default/Users/$username" "$passw"
             dscl -f "$dscl_path" localhost -append "/Local/Default/Groups/admin" GroupMembership $username
 
-            # Block MDM domains
-            if [ ! -d "/Volumes/$system_volume/etc" ]; then
-                mkdir /Volumes/"$system_volume"/etc
-                touch /Volumes/"$system_volume"/etc/hosts
-            fi
-
-            echo "0.0.0.0 deviceenrollment.apple.com" >>/Volumes/"$system_volume"/etc/hosts
-            echo "0.0.0.0 mdmenrollment.apple.com" >>/Volumes/"$system_volume"/etc/hosts
-            echo "0.0.0.0 iprofiles.apple.com" >>/Volumes/"$system_volume"/etc/hosts
-            echo -e "${GRN}Successfully blocked MDM & Profile Domains"
-
             # Remove configuration profiles
-            touch /Volumes/Data/private/var/db/.AppleSetupDone
-            rm -rf /Volumes/"$system_volume"/var/db/ConfigurationProfiles/Settings/.cloudConfigHasActivationRecord
-            rm -rf /Volumes/"$system_volume"/var/db/ConfigurationProfiles/Settings/.cloudConfigRecordFound
-            touch /Volumes/"$system_volume"/var/db/ConfigurationProfiles/Settings/.cloudConfigProfileInstalled
-            touch /Volumes/"$system_volume"/var/db/ConfigurationProfiles/Settings/.cloudConfigRecordNotFound
+            touch /Volumes/Data/private/private/var/db/.AppleSetupDone
+            rm -rf /Volumes/"$system_volume"/private/var/db/ConfigurationProfiles/Settings/.cloudConfigHasActivationRecord
+            rm -rf /Volumes/"$system_volume"/private/var/db/ConfigurationProfiles/Settings/.cloudConfigRecordFound
+            touch /Volumes/"$system_volume"/private/var/db/ConfigurationProfiles/Settings/.cloudConfigProfileInstalled
+            touch /Volumes/"$system_volume"/private/var/db/ConfigurationProfiles/Settings/.cloudConfigRecordNotFound
 
             echo -e "${GRN}MDM enrollment has been bypassed!${NC}"
             echo -e "${NC}Exit terminal and reboot your Mac.${NC}"
             break
             ;;
+        "Block MDM domains")
+            # Block MDM domains
+            #these hosts settings have NO effect when re-booted from the "Macintosh HD - Data" "Data" 
+            # etc folder linked etc-> private/etc. how to write to /private/etc/hosts?
+            # /Volumes/Data/private/etc/hosts ?
+            echo "0.0.0.0   deviceenrollment.apple.com" >>/Volumes/"$system_volume"/private/etc/hosts
+            echo "0.0.0.0   mdmenrollment.apple.com" >>/Volumes/"$system_volume"/private/etc/hosts
+            echo "0.0.0.0   iprofiles.apple.com" >>/Volumes/"$system_volume"/private/etc/hosts
+            #Flush the DNS cache
+            cat /Volumes/"$system_volume"/private/etc/hosts
+            dscacheutil -flushcache; sudo killall -HUP mDNSResponder
+            echo -e "${GRN}Successfully blocked MDM & Profile Domains"
+            cat /Volumes/"$system_volume"/private/etc/hosts
+            break
+            ;;       
         "Disable Notification (SIP)")
             echo -e "${RED}Enter Password To Proceed${NC}"
-            rm /Volumes/"$system_volume"/var/db/ConfigurationProfiles/Settings/.cloudConfigHasActivationRecord
-            rm /Volumes/"$system_volume"/var/db/ConfigurationProfiles/Settings/.cloudConfigRecordFound
-            touch /Volumes/"$system_volume"/var/db/ConfigurationProfiles/Settings/.cloudConfigProfileInstalled
-            touch /Volumes/"$system_volume"/var/db/ConfigurationProfiles/Settings/.cloudConfigRecordNotFound
+            sudo rm /Volumes/"$system_volume"/private/var/db/ConfigurationProfiles/Settings/.cloudConfigHasActivationRecord
+            sudo rm /Volumes/"$system_volume"/private/var/db/ConfigurationProfiles/Settings/.cloudConfigRecordFound
+            sudo touch /Volumes/"$system_volume"/private/var/db/ConfigurationProfiles/Settings/.cloudConfigProfileInstalled
+            sudo touch /Volumes/"$system_volume"/private/var/db/ConfigurationProfiles/Settings/.cloudConfigRecordNotFound
             break
             ;;
         "Disable Notification (Recovery)")
-            rm -rf /Volumes/"$system_volume"/var/db/ConfigurationProfiles/Settings/.cloudConfigHasActivationRecord
-	        rm -rf /Volumes/"$system_volume"/var/db/ConfigurationProfiles/Settings/.cloudConfigRecordFound
-	        touch /Volumes/"$system_volume"/var/db/ConfigurationProfiles/Settings/.cloudConfigProfileInstalled
-	        touch /Volumes/"$system_volume"/var/db/ConfigurationProfiles/Settings/.cloudConfigRecordNotFound
-
+            rm -rf /Volumes/"$system_volume"/private/var/db/ConfigurationProfiles/Settings/.cloudConfigHasActivationRecord
+	        rm -rf /Volumes/"$system_volume"/private/var/db/ConfigurationProfiles/Settings/.cloudConfigRecordFound
+	        touch /Volumes/"$system_volume"/private/var/db/ConfigurationProfiles/Settings/.cloudConfigProfileInstalled
+	        touch /Volumes/"$system_volume"/private/var/db/ConfigurationProfiles/Settings/.cloudConfigRecordNotFound
             break
             ;;
         "Check MDM Enrollment")
@@ -103,6 +106,7 @@ select opt in "${options[@]}"; do
 		    echo -e "${RED}Enter Password To Proceed${NC}"
 		    echo ""
 		    profiles show -type enrollment
+            sudo profiles show -type enrollment
 		    break
 		    ;;
         "Reboot & Exit")
